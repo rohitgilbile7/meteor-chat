@@ -1,0 +1,219 @@
+<head>
+  <title>chatDemo</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <script src="https://use.fontawesome.com/45e03a14ce.js"></script>
+</head>
+
+<body>
+  <div class="main_section">
+    <div class="container">
+      <div class="chat_container">
+
+        {{> sidebar }}
+        {{>messages}}
+        {{>fileList}}
+      </div>
+    </div>
+  </div>
+</body>
+
+
+<template name="sidebar">
+  <div id="sidebar-wrapper">
+    <ul class="sidebar-nav onlUsers">
+      <li class="sidebar-brand">
+        <a href="#">
+          Online Users
+        </a>
+      </li>
+      {{#each onlusr}}
+      <li class="user" id="{{_id}}"><a href='#'>{{username}}</a></li>
+      {{/each}}
+    </ul>
+  </div>
+</template>
+
+<template name="sidebar1">
+  <div class="col-sm-3 chat_sidebar">
+    <div class="row">
+      <div id="custom-search-input">
+        <div class="input-group col-md-12">
+          <input type="text" class="  search-query form-control" placeholder="Conversation" />
+          <button class="btn btn-danger" type="button">
+            <span class=" glyphicon glyphicon-search"></span>
+          </button>
+        </div>
+      </div>
+      <div class="dropdown all_conversation">
+        <button class="dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-weixin" aria-hidden="true"></i>
+          All Conversations
+          <span class="caret pull-right"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+          <li><a href="#"> All Conversation </a>  <ul class="sub_menu_ list-unstyled">
+            <li><a href="#"> All Conversation </a> </li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Another action</a></li>
+        <li><a href="#">Something else here</a></li>
+        <li><a href="#">Separated link</a></li>
+      </ul>
+    </div>
+    <div class="member_list">
+      <ul class="list-unstyled">
+        <li class="left clearfix">
+          <span class="chat-img pull-left">
+            <img src="https://lh6.googleusercontent.com/-y-MY2satK-E/AAAAAAAAAAI/AAAAAAAAAJU/ER_hFddBheQ/photo.jpg" alt="User Avatar" class="img-circle">
+          </span>
+          <div class="chat-body clearfix">
+            <div class="header_sec">
+              <strong class="primary-font">Jack Sparrow</strong> <strong class="pull-right">
+                09:45AM</strong>
+              </div>
+              <div class="contact_sec">
+                <strong class="primary-font">(123) 123-456</strong> <span class="badge pull-right">3</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div></div>
+    </div>
+  </template>
+
+
+  <template name="messages1">
+    {{#each msgs}}
+    <strong>{{name}}:</strong> {{text}}<br>
+    {{/each}}
+  </template>
+
+  <template name="messages">
+    <div class="col-sm-9 message_section">
+      <div class="row">
+        <div class="new_message_head">
+          <div class="pull-left"><button><i class="fa fa-plus-square-o" aria-hidden="true"></i> New Message</button></div>
+          <div class="pull-right">
+            {{> loginButtons align="right"}}
+            <!--    <div class="dropdown">
+            <button class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-cogs" aria-hidden="true"></i>  Setting
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Profile</a></li>
+          <li><a href="#">Logout</a></li>
+        </ul>
+      </div>
+
+    -->
+  </div>
+</div><!--new_message_head-->
+
+<div class="chat_area">
+  <ul class="list-unstyled">
+    {{#each msgs}}
+    <li class="left clearfix   {{#if equals currentUser.username name }} admin_chat {{/if}}">
+      <span class="chat-img1 {{#if equals currentUser.username name }}pull-right {{else}} pull-left  {{/if}}">
+        {{name}}
+      </span>
+      <div class="chat-body1 clearfix">
+        <p>{{text}}</p>
+        <div class="chat_time pull-right"></div>
+      </div>
+    </li>
+    {{/each}}
+  </ul>
+</div><!--chat_area-->
+<div class="message_write">
+
+<!--  <div class="chat_bottom"><a href="#" class="pull-left upload_btn"><i class="fa fa-cloud-upload" aria-hidden="true"></i>
+    Add Files</a> </div> -->
+    <div class="filecontainer">
+      {{#each theFiles}}
+      <tr>
+        <td>{{uploadedAt}}</td><td>{{original.name}}</td><td><a href="{{url}}">link</a></td><td>{{#if isUploaded}}uploaded{{else}}uploading...{{/if}}</td><td><button id="deleteFileButton">delete</button></td>
+      </tr>
+      {{/each}}
+      <span class="select-wrapper">
+        <input type="file" name="image_src" class="file-uploads" id="image_src" />
+      </span>
+      <input type="text" id="file" value="" />
+      <textarea class="form-control" id="message" placeholder="type a message"></textarea>
+      <div class="clearfix"></div><br/>
+
+        <input type="button" name="send" class="pull-right btn btn-success" value="Send" />
+    </div>
+
+    </div>
+  </div>
+</div>
+<table border="1">
+  <tbody>
+    {{#each theFiles}}
+    <tr>
+      <td>{{uploadedAt}}</td><td>{{original.name}}</td><td><a href="{{url}}">link</a></td><td>{{#if isUploaded}}uploaded{{else}}uploading...{{/if}}</td><td><button id="deleteFileButton">delete</button></td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+</template>
+
+<template name="input">
+  <p>Message: <input type="text" id="message1"></p>
+</template>
+
+<template name="chat">
+  <div class="chat_window">
+    <input type="hidden" id="Txtusername" />
+    <div class="top_menu">
+      <div class="buttons">
+        <div class="button close"></div>
+        <div class="button minimize"></div>
+        <div class="button maximize"></div>
+      </div>
+      <div class="title">Chat   <small id="welcomeUser" class="right"> </small></div>
+
+    </div>
+    <ul class="messages"></ul>
+    <div class="bottom_wrapper clearfix">
+      <textarea rows="5" id="message"  name="name"  class="emojis-wysiwyg"></textarea>
+      <div class="send_message">
+        <div class="icon"></div>
+        <div class="text" onclick="sendMessage()">Send</div>
+      </div>
+
+    </div>
+  </div>
+  <div class="message_template">
+    <li class="message" id="">
+      <div class="cname avatar"></div>
+      <div class="text_wrapper">
+        <div class="text"></div>
+      </div>
+    </li>
+  </div>
+</template>
+<template name="fileList">
+    <!-- <br/>Testing file upload below<br/><br/>
+  <input class="sfile-upload-lass" type="file">
+  <br/><br/> -->
+
+
+  <table border="1">
+    <tbody>
+      {{#each theFiles}}
+      <tr>
+        <td>{{uploadedAt}}</td><td>{{original.name}}</td><td><a href="{{url}}">link</a></td><td>{{#if isUploaded}}uploaded{{else}}uploading...{{/if}}</td><td><button id="deleteFileButton">delete</button></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>

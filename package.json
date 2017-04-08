@@ -1,0 +1,23 @@
+{
+  "name": "meteorchat",
+  "version": "1.0.0",
+  "description": "ddd",
+  "main": "models.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rohit",
+  "license": "ISC",
+  "dependencies": {
+    "babel-runtime": "^6.23.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chat-app"
+  },
+  "keywords": [
+    "chat"
+  ]
+}
