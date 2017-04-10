@@ -1,9 +1,6 @@
 <head>
   <title>chatDemo</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
   <link rel="stylesheet" href="/css/style.css" />
-
   <script src="https://use.fontawesome.com/45e03a14ce.js"></script>
 </head>
 
@@ -14,13 +11,10 @@
 
         {{> sidebar }}
         {{>messages}}
-        {{>fileList}}
       </div>
     </div>
   </div>
 </body>
-
-
 <template name="sidebar">
   <div id="sidebar-wrapper">
     <ul class="sidebar-nav onlUsers">
@@ -31,6 +25,9 @@
       </li>
       {{#each onlusr}}
       <li class="user" id="{{_id}}"><a href='#'>{{username}}</a></li>
+      <li>
+           <button type="button" class="userIDLink btn btn-def btn-block">call</button>
+      </li>
       {{/each}}
     </ul>
   </div>
@@ -88,12 +85,6 @@
   </template>
 
 
-  <template name="messages1">
-    {{#each msgs}}
-    <strong>{{name}}:</strong> {{text}}<br>
-    {{/each}}
-  </template>
-
   <template name="messages">
     <div class="col-sm-9 message_section">
       <div class="row">
@@ -125,7 +116,11 @@
         {{name}}
       </span>
       <div class="chat-body1 clearfix">
+        {{#if image}}
+          <img src="{{image}}" height="100" width="100" />
+        {{/if}}
         <p>{{text}}</p>
+        <p class="pull-right"> {{timeFormat createdAt}}</p>
         <div class="chat_time pull-right"></div>
       </div>
     </li>
@@ -145,11 +140,15 @@
       <span class="select-wrapper">
         <input type="file" name="image_src" class="file-uploads" id="image_src" />
       </span>
-      <input type="text" id="file" value="" />
+      <input type="hidden" id="file" value="" />
+      <span style="margin-right:10px;display:none " class="preview">
+              <img src="" height="50" width="50" id="imagePreview" />
+          <a href="javascript:void(0)" id="DeletePreview">Delete</a>
+      </span>
       <textarea class="form-control" id="message" placeholder="type a message"></textarea>
       <div class="clearfix"></div><br/>
 
-        <input type="button" name="send" class="pull-right btn btn-success" value="Send" />
+        <input type="button" name="send" id="sendMessage" class="pull-right btn btn-success" value="Send" />
     </div>
 
     </div>
@@ -201,19 +200,44 @@
     </li>
   </div>
 </template>
-<template name="fileList">
-    <!-- <br/>Testing file upload below<br/><br/>
-  <input class="sfile-upload-lass" type="file">
-  <br/><br/> -->
 
+<template name="chatModal">
+    <div class="modal ">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{getStatus}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align:center">
+                        <video width="100%" id="videoChatAnswerVideo" poster="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif"></video>
+                        <video style="width:250px" id="videoChatCallerVideo"></video>
+                    </div>
+                      {{#if incomingPhoneCall}}
+                    <div class="text-center">
+                        <h1>{{getCallerName}} is calling you!</h1>
+                    </div>
+                    {{/if}}
+                </div>
 
-  <table border="1">
-    <tbody>
-      {{#each theFiles}}
-      <tr>
-        <td>{{uploadedAt}}</td><td>{{original.name}}</td><td><a href="{{url}}">link</a></td><td>{{#if isUploaded}}uploaded{{else}}uploading...{{/if}}</td><td><button id="deleteFileButton">delete</button></td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
+                <div class="modal-footer">
+                    {{#if incomingPhoneCall}}
+                       <button type="button" id="answerCall" class="btn btn-success">Answer</button>
+                    <button type="button" id="ignoreCall" class="btn btn-danger">Ignore</button>{{else}}
+                    <button type="button" class="btn btn-danger" id="closeChat">End Call</button>{{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="modal_loading">
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content" style="text-align:center">
+            <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+            <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
 </template>

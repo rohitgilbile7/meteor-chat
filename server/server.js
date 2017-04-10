@@ -13,7 +13,7 @@ Meteor.startup(function(){
 });
 YourFileCollection =new FS.Collection('uploads',{
   //stores: [new FS.Store.FileSystem('uploads',{path:'/var/www/html/chatDemo/public/uploads/user/'})]
-  stores: [new FS.Store.FileSystem('uploads',{path:'~/uploads/'})]
+  stores: [new FS.Store.FileSystem('uploads',{path:'/var/www/html/test/upload/'})]
 });
 YourFileCollection.allow({
   insert: function (userId, doc) {
