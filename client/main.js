@@ -83,22 +83,39 @@ Template.messages.events = {
           if (!err) {
             console.log("inserted without error");
             var src= 'http://127.0.0.1/test/upload/uploads-'+fileObj._id +'-' +fileObj.name();
-			         $('#file').val(src);
-			       //  $('#imagePreview').attr('src',src);
-            //    $('.preview').show();
+            $('#file').val(src);
+        //    $('#imagePreview').attr('src',src);
+            $('#imageName').text(fileObj.name());
+            $('.preview').show();
           }
           else {
             console.log("there was an error", err);
           }
         });
+
       });
     },
 	'click #DeletePreview':function(){
 		$('#file').val('');
 		$('#imagePreview').attr('src','');
 		$('.preview').hide();
-
-	}
+	},
+  'click .copyText':function(e){
+      //this.select();
+  //  var text =   $(this).closest("span").text();
+      var text = $(e.target).closest("p").find('span').text();
+      var copyText = document.createElement("input");
+      document.body.appendChild(copyText);
+      // $(copyText).css('display','none');
+       $(copyText).css('margin-left','30%');
+      copyText.setAttribute("id", "copyTextId");
+      document.getElementById("copyTextId").value = text;
+      document.getElementById("copyTextId").select();
+      document.execCommand('copy');
+      document.body.removeChild(copyText);
+      alert('Message copied to clipboard ');
+    //  document.getElementById("copyTextId").value = '';
+  }
 }
 
 Template.registerHelper( 'equals', ( a1, a2 ) => {
@@ -117,11 +134,6 @@ Template.registerHelper('timeFormat', ( timestamp ) => {
 if (Meteor.isClient) {
   Meteor.subscribe("fileUploads");
    Template.body.onRendered(renderCallTemplate);
-  Template.messages.helpers({
-    theFiles: function () {
-      return YourFileCollection.find();
-    }
-  });
   // start Video calling
   Meteor.startup(function() {
    Meteor.VideoCallServices.onReceivePhoneCall = function() {
@@ -321,4 +333,5 @@ YourFileCollection =new FS.Collection('uploads',{
     // stores: [new FS.Store.FileSystem('uploads',{path:'/var/www/html/chatDemo/public/uploads/user/'})]
     stores: [new FS.Store.FileSystem('uploads',{path:'/var/www/html/test/upload/'})]
 });
+
 FS.debug = true;

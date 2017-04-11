@@ -10,6 +10,15 @@ Meteor.startup(function(){
             return false;
         }
     });
+    process.env.MAIL_URL = "smtp://postmaster@sandboxec10ef4a57e140218e8551fbef2e5c8f.mailgun.org:0a552af27cec37e3a4d98acf68ed31af@smtp.mailgun.org:587";
+
+     Email.send({
+        to: "rgilbile@officebrain.com",
+        from: "rgilbile@officebrain.com",
+        subject: "Meteor Email",
+        text: "The email content..."
+     });
+
 });
 YourFileCollection =new FS.Collection('uploads',{
   //stores: [new FS.Store.FileSystem('uploads',{path:'/var/www/html/chatDemo/public/uploads/user/'})]
