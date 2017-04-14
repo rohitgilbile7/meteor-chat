@@ -14,8 +14,9 @@ Template.sidebar.helpers({
 });
 
 Template.sidebar.events({
-    'click .user':function(){
+    'click .user':function(e){
         Session.set('currentId',this._id);
+        Session.set('username',this.username);
         var res=ChatRooms.findOne({chatIds:{$all:[this._id,Meteor.userId()]}});
         if(res)
         {
@@ -29,8 +30,16 @@ Template.sidebar.events({
         }
         $('.user').removeClass('active');
         $('#' + this._id).addClass('active');
-  //      UI.insert(UI.render(Template.input),$( '#page-content-wrapper' ).get(0));
-  //      UI.insert(UI.render(Template.messages),$( '#page-content-wrapper' ).get(0));
+        $('div[class=chat-with]').text($(e.target).attr('class'));
+        var avatar = $(e.target).attr('src');
+        console.log(avatar);
+        $('.chat-header img').attr("src",avatar).show();
+      //  $('div[class=chat-avatar]').show();
+        var div = $("#chat_area");
+  //      div.scrollTop(div.prop('scrollHeight'));
+        // console.log('scrollTop' +div);
+        setTimeout(function(){div.scrollTop(div.prop('scrollHeight'));},1000);
+      //  console.log('calle console');
 
     }
 
@@ -49,22 +58,29 @@ Template.messages.events = {
   'click #sendMessage' : function (event,template) {
       if (Meteor.user())
         {
+            var imageSrc = $('#file').text();
             var name = Meteor.user().username;
             var message = document.getElementById('message');
-            var image =  document.getElementById('file');
-            if (message.value !== '') {
+            if(imageSrc == ' '){
+              image = 'noimage';
+            }
+            else{
+              image = imageSrc.slice(0, -1);
+            }
+            if (message.value !== '' || image != 'noimage') {
                 var de=ChatRooms.update({"_id":Session.get("roomid")},{$push:{messages:{
                  name: name,
                  text: message.value,
-                 image: image.value,
+                 image: image,
                  createdAt: Date.now()
                 }}});
                 document.getElementById('message').value = '';
                 message.value = '';
                 $('#file').val('');
-				        $('#imagePreview').attr('src','');
+                $('#imageName').html('');
+				       // $('#imagePreview').attr('src','');
 				        $('.preview').hide();
-		    }
+		       }
         }
         else
         {
@@ -73,53 +89,70 @@ Template.messages.events = {
     },
     'change .file-uploads': function (event, template) {
     //  console.log("uploading...")
-
+  var  src = '';
       FS.Utility.eachFile(event, function (file) {
         console.log("each file...");
         var yourFile = new FS.File(file);
-        console.log(yourFile);
+      //  console.log(yourFile);
         YourFileCollection.insert(yourFile, function (err, fileObj) {
-          console.log("callback for the insert, err: ", err);
+        //  console.log("callback for the insert, err: ", err);
           if (!err) {
-            console.log("inserted without error");
-            var src= 'http://127.0.0.1/test/upload/uploads-'+fileObj._id +'-' +fileObj.name();
-            $('#file').val(src);
-        //    $('#imagePreview').attr('src',src);
-            $('#imageName').text(fileObj.name());
+      //      console.log("inserted without error");
+            var src= 'http://172.16.120.85/test/upload/uploads-'+fileObj._id +'-' +fileObj.name();
+            var data = imageJson.push(src);
+            $('#file').append(src + ",");
+          //  $('#imagePreview').attr('src',src);
+            $('#imageName').append("<span id="+fileObj._id+">"+ fileObj.name() +" <a href='"+src+"' target='_blank' id="+fileObj._id+" class=''>View</a>   <a href='javascript:void(0)' id="+fileObj._id+" class='deleteImage'>Delete</a> <br/></span> " );
             $('.preview').show();
           }
           else {
             console.log("there was an error", err);
           }
         });
-
       });
     },
-	'click #DeletePreview':function(){
-		$('#file').val('');
-		$('#imagePreview').attr('src','');
-		$('.preview').hide();
+	'click .deleteImage':function(e){
+    var id = $(e.target).attr('id');
+		//$(e.target).closest('span').remove();
+    $('span[id='+id+']').remove();
 	},
-  'click .copyText':function(e){
-      //this.select();
-  //  var text =   $(this).closest("span").text();
-      var text = $(e.target).closest("p").find('span').text();
+	'click .sendinEmail': function(e){
+		var textToEmail = $(e.target).data('message');
+		var messageFrom = $(e.target).closest("a").attr('class');
+		var sendMessage = messageFrom + ': '  + textToEmail;
+		Meteor.call('sendtextToEmail',sendMessage,function(err, response) {
+			if(!err){
+				alert('email send successfully!');
+			}
+		});
+	},
+	'click .emailConversation': function(e){
+		Modal.show("sendConversation", {}, {
+			backdrop: 'static'
+		});
+	},
+    'click .copyText':function(e){
+    //  var text = $(e.target).closest("p").find('span').text();
+      //var text = $(e.target).parent().parent().find(".my-message").text();
+      var text = $(e.target).data('message');
       var copyText = document.createElement("input");
       document.body.appendChild(copyText);
-      // $(copyText).css('display','none');
-       $(copyText).css('margin-left','30%');
+//    $(copyText).css('display','none');
       copyText.setAttribute("id", "copyTextId");
       document.getElementById("copyTextId").value = text;
       document.getElementById("copyTextId").select();
+      console.log(document.getElementById("copyTextId").select());
       document.execCommand('copy');
       document.body.removeChild(copyText);
-      alert('Message copied to clipboard ');
-    //  document.getElementById("copyTextId").value = '';
+      alert('Message copied to clipboard ' + text);
   }
 }
 
 Template.registerHelper( 'equals', ( a1, a2 ) => {
   return a1 === a2;
+});
+Template.registerHelper( 'Imageequals', ( a1 ) => {
+  return a1 != 'noimage';
 });
 Template.registerHelper('timeFormat', ( timestamp ) => {
   if ( timestamp ) {
@@ -131,7 +164,21 @@ Template.registerHelper('timeFormat', ( timestamp ) => {
     }
   }
 });
+//Template.tags.helpers({
+Template.registerHelper('stringToArray', ( input ) => {
+    var tagArray = [];
+    tagArray = input.split(',');
+    return tagArray;
+});
+// Template.registerHelper('isEmpty',function(item) {
+//   return item === '';
+// });
+// Handlebars.registerHelper("isNull", function(value) {
+//   return value === null;
+// });
 if (Meteor.isClient) {
+
+  var imageJson =new Array();
   Meteor.subscribe("fileUploads");
    Template.body.onRendered(renderCallTemplate);
   // start Video calling
@@ -150,6 +197,8 @@ if (Meteor.isClient) {
      alert("call ignored");
    }
    Meteor.VideoCallServices.onWebcamFail = function(error) {
+     alert("Please connect webcam", error);
+      Modal.hide();
      console.log("Failed to get webcam", error);
    }
    Meteor.VideoCallServices.elementName = "sidebar";
@@ -327,6 +376,35 @@ Template.chatModal.helpers({
  }
 })
   // ends video calling
+
+Template.sendConversation.events({
+	'click #sendChatConversation':function(event){
+		var toEmail = $('#emailTo').val();
+  	var result=ChatRooms.findOne({_id:Session.get('roomid')});
+        if(result){
+          var message = '';
+		  //return result.messages;
+			for(var k in result.messages) {
+				 message += result.messages[k].name +':' +result.messages[k].image + ' ' + result.messages[k].text + '\n';
+			}
+    	Meteor.call('emailConversation',toEmail,message,function(err, response) {
+			Modal.hide();
+			if(!err){
+				alert('email send successfully!');
+			}
+			else{
+				console.log(err);
+			}
+    });
+        }
+	},
+	'click .closeSendChat':function(){
+		Modal.hide();
+	}
+});
+
+
+
 }
 
 YourFileCollection =new FS.Collection('uploads',{

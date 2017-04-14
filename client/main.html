@@ -1,11 +1,13 @@
 <head>
   <title>chatDemo</title>
-  <link rel="stylesheet" href="/css/style.css" />
-  <script src="https://use.fontawesome.com/45e03a14ce.js"></script>
+  <!--<link rel="stylesheet" href="/css/style.css" /> -->
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+  <link rel="stylesheet" href="css/chat.css">
 </head>
 
 <body>
-  <div class="main_section">
+<!--  <div class="main_section">
     <div class="container">
       <div class="chat_container">
 
@@ -13,111 +15,95 @@
         {{>messages}}
       </div>
     </div>
+  </div> -->
+  <div class="container clearfix">
+    {{> sidebar }}
+    {{>messages}}
   </div>
+
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js'></script>
+
 </body>
-<template name="sidebar">
-  <div id="sidebar-wrapper">
-    <ul class="sidebar-nav onlUsers">
+<template name="peopleList">
+  <div id="sidebar-wrapper1">
+    <ul class="sidebar-nav onlUsers1">
       <li class="sidebar-brand">
         <a href="#">
           Online Users
         </a>
       </li>
       {{#each onlusr}}
-      <li class="user" id="{{_id}}"><a href='#'>{{username}}</a></li>
-      <li>
-        <button type="button" class="userIDLink btn btn-def btn-block">call</button>
-      </li>
+      <li class="user" id="{{_id}}"><a href='javascript:void(0)'>{{username}}
+		 <div class="dropdown">
+              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-cogs" aria-hidden="true"></i><span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                <li><a href="javascript:void(0)" class="userIDLink1">Video Call</a></li>
+              </ul>
+            </div>
+			</a>
+	  </li>
+
       {{/each}}
     </ul>
   </div>
 </template>
 
-<template name="sidebar1">
-  <div class="col-sm-3 chat_sidebar">
-    <div class="row">
-      <div id="custom-search-input">
-        <div class="input-group col-md-12">
-          <input type="text" class="  search-query form-control" placeholder="Conversation" />
-          <button class="btn btn-danger" type="button">
-            <span class=" glyphicon glyphicon-search"></span>
-          </button>
-        </div>
-      </div>
-      <div class="dropdown all_conversation">
-        <button class="dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fa fa-weixin" aria-hidden="true"></i>
-          All Conversations
-          <span class="caret pull-right"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-          <li><a href="#"> All Conversation </a>  <ul class="sub_menu_ list-unstyled">
-            <li><a href="#"> All Conversation </a> </li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </li>
-        <li><a href="#">Another action</a></li>
-        <li><a href="#">Something else here</a></li>
-        <li><a href="#">Separated link</a></li>
-      </ul>
+<template name="sidebar">
+  <div class="people-list " id="people-list">
+    <div class="search">
+      <input type="text" placeholder="search" />
+      <i class="fa fa-search"></i>
     </div>
-    <div class="member_list">
-      <ul class="list-unstyled">
-        <li class="left clearfix">
-          <span class="chat-img pull-left">
-            <img src="https://lh6.googleusercontent.com/-y-MY2satK-E/AAAAAAAAAAI/AAAAAAAAAJU/ER_hFddBheQ/photo.jpg" alt="User Avatar" class="img-circle">
-          </span>
-          <div class="chat-body clearfix">
-            <div class="header_sec">
-              <strong class="primary-font">Jack Sparrow</strong> <strong class="pull-right">
-                09:45AM</strong>
-              </div>
-              <div class="contact_sec">
-                <strong class="primary-font">(123) 123-456</strong> <span class="badge pull-right">3</span>
+    <div id="sidebar-wrapper1">
+    <ul class="list onlUsers">
+    {{# if currentUser }}
+      {{#each onlusr}}
+          <li class="clearfix user"  id="{{_id}}">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" class="{{username}}" />
+            <div class="about">
+              <div class="name">{{username}}</div>
+              <div class="status">
+                <i class="fa fa-circle online"></i> online <br/>
+                 <a href="javascript:void(0)" class="userIDLink">Video Call</a>
               </div>
             </div>
           </li>
-        </ul>
-      </div></div>
-    </div>
-  </template>
+        {{/each}}
+        {{else}}
+          <h3>Please login to chat</h3>
+      {{/if}}
+    </ul>
+  </div>
+  </div>
+</template>
 
 
-  <template name="messages">
+
+<template name="chat">
     <div class="col-sm-9 message_section">
       <div class="row">
         <div class="new_message_head">
           <div class="pull-left"><button><i class="fa fa-plus-square-o" aria-hidden="true"></i> New Message</button></div>
-          <div class="pull-right">
-            {{> loginButtons align="right"}}
-            <!--    <div class="dropdown">
-            <button class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-cogs" aria-hidden="true"></i>  Setting
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Profile</a></li>
-          <li><a href="#">Logout</a></li>
-        </ul>
-      </div>
-
-    -->
-  </div>
-</div><!--new_message_head-->
-
-<div class="chat_area">
+            <div class="pull-right">
+              {{> loginButtons align="right"}}
+            </div>
+    </div><!--new_message_head-->
+  <div class="chat_area" id="chat_area">
   <ul class="list-unstyled">
     {{#each msgs}}
     <li class="left clearfix   {{#if equals currentUser.username name }} admin_chat {{/if}}">
-      <span class="chat-img1 {{#if equals currentUser.username name }}pull-right {{else}} pull-left  {{/if}}">
+      <span class="chat-img1 {{#if equals currentUser.username name }}pull-right {{else}} pull-left  {{/if}} chatUname">
         {{name}}
       </span>
       <div class="chat-body1 clearfix">
         {{#if image}}
-        <img src="{{image}}" height="100" width="100" />
+          {{#each stringToArray image}}
+                <a href="{{this}}" target="_blank"> <img src="{{this}}" height="100" width="100" /> </a>
+            {{/each}}
         {{/if}}
         <p> <span class="usrMessage"> {{text}} </span>
           <div class="pull-right">
@@ -126,8 +112,9 @@
                 <i class="fa fa-cogs" aria-hidden="true"></i><span class="caret"></span>
               </a>
               <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                <li class="copyText"><a href="#">Copy</a></li>
-                <li><a href="#">Send In Email</a></li>
+                <li class="copyText"><a href="javascript:void(0)">Copy Text</a></li>
+                <li class="sendinEmail" data-name="{{name}}"><a class="{{name}}" href="javascript:void(0)" >Send In Email</a></li>
+                <li class="replyTo" ><a href="javascript:void(0)" >Reply</a></li>
               </ul>
             </div>
           </div>
@@ -140,21 +127,15 @@
   </ul>
 </div><!--chat_area-->
 <div class="message_write">
-
-  <!--  <div class="chat_bottom"><a href="#" class="pull-left upload_btn"><i class="fa fa-cloud-upload" aria-hidden="true"></i>
-  Add Files</a> </div> -->
   <div class="filecontainer">
-
     <span class="select-wrapper">
-      <input type="file" name="image_src" class="file-uploads" id="image_src" />
+      <input type="file" name="image_src[]" multiple class="file-uploads" id="image_src" />
     </span>
-    <input type="hidden" id="file" value="" />
-    <span style="margin-right:10px;display:none " class="preview">
-      <img src="" height="50" width="50" id="imagePreview" style="display:none" />
-      <p><span id="imageName"> </span>   <a href="javascript:void(0)" id="DeletePreview">Delete</a></p>
-    </span>
+    <div class="file" id="file" style="display:none" > </div>
+	   <span class="emailConversation" title="Email conversation"> </span>
     <textarea class="form-control" id="message" placeholder="type a message"></textarea>
     <div class="clearfix"></div><br/>
+    <div id="imageName"> </div>
 
     <input type="button" name="send" id="sendMessage" class="pull-right btn btn-success" value="Send" />
   </div>
@@ -162,51 +143,132 @@
 </div>
 </div>
 </div>
-<table border="1">
-  <tbody>
-    {{#each theFiles}}
-    <tr>
-      <td>{{uploadedAt}}</td><td>{{original.name}}</td><td><a href="{{url}}">link</a></td><td>{{#if isUploaded}}uploaded{{else}}uploading...{{/if}}</td><td><button id="deleteFileButton">delete</button></td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
 </template>
 
-<template name="input">
-  <p>Message: <input type="text" id="message1"></p>
+
+<template name="messages">
+  <div class="chat">
+    <div class="chat-header clearfix">
+      <img src="" class="chat-avatar" alt="avatar" style="display:none" />
+
+      <div class="chat-about">
+        <div class="chat-with">
+
+        </div>
+        <div class="chat-num-messages"></div>
+      </div>
+      <!-- <i class="fa fa-star"></i> -->
+        {{> loginButtons align="right"}}
+    </div> <!-- end chat-header -->
+
+    <div class="chat-history">
+      <ul>
+        {{#each msgs}}
+          {{#if equals currentUser.username name }}
+            <li class="clearfix">
+                <div class="message-data align-right">
+                  <span class="message-data-time" >{{timeFormat createdAt}}</span> &nbsp; &nbsp;
+                  <span class="message-data-name" >{{name}}</span> <i class="fa fa-circle me"></i>
+                  <span class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fa fa-cogs" aria-hidden="true"></i><span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                      <li class="copyText" data-message="{{text}}"><a href="javascript:void(0)" data-message="{{text}}">Copy Text</a></li>
+                      <li class="sendinEmail" data-name="{{name}}" data-message="{{text}}"><a class="{{name}}" href="javascript:void(0)" data-message="{{text}}" >Send In Email</a></li>
+                      <li class="replyTo" ><a href="javascript:void(0)" >Reply</a></li>
+                    </ul>
+                  </span>
+                </div>
+                <div class="message other-message float-right">
+                  {{#if image}}
+                    {{#each stringToArray image }}
+                      {{#if Imageequals this  }}
+                          <a href="{{this}}" target="_blank"> <img src="{{this}}" class="image-logo" /> </a>
+                        {{/if}}
+                      {{/each}}
+                  {{/if}}
+                 <div class="sms-text">{{text}}</div>
+                </div>
+              </li>
+            {{else}}
+              <li>
+                <div class="message-data">
+                  <span class="message-data-name"><i class="fa fa-circle online"></i> {{name}}</span>
+                  <span class="message-data-time">{{timeFormat createdAt}}</span>
+                  <span class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fa fa-cogs" aria-hidden="true"></i><span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenu1">
+                      <li class="copyText"  data-message="{{text}}"><a href="javascript:void(0)" data-message="{{text}}">Copy Text</a></li>
+                      <li class="sendinEmail" data-name="{{name}}" data-message="{{text}}"><a class="{{name}}" href="javascript:void(0)" data-message="{{text}}">Send In Email</a></li>
+                      <li class="replyTo" ><a href="javascript:void(0)" >Reply</a></li>
+                    </ul>
+                  </span>
+                </div>
+                <div class="message my-message">
+                  {{#if image}}
+                    {{#each stringToArray image}}
+                        {{#if Imageequals this  }}
+                          <a href="{{this}}" target="_blank"> <img src="{{this}}" class="image-logo" /> </a>
+                        {{/if}}
+                      {{/each}}
+                  {{/if}}
+                  <div class="sms-text">{{text}}</div>
+                </div>
+              </li>
+            {{/if}}
+
+        {{/each}}
+      </ul>
+
+    </div> <!-- end chat-history -->
+
+    <div class="chat-message clearfix">
+      <textarea name="message-to-send" id="message" placeholder ="Type your message" rows="3"></textarea>
+
+      <!-- <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
+      <i class="fa fa-file-image-o" ></i> -->
+    {{# if currentUser }}
+        <div id="imageName"> </div>
+        <i class="fa fa-envelope emailConversation" aria-hidden="true"></i>
+        <span class="select-wrapper">
+          <input type="file" name="image_src[]" multiple class="file-uploads" id="image_src" />
+        </span>
+        <div class="file" id="file" style="display:none" > </div>
+    {{/if}}
+      <button id="sendMessage">Send</button>
+
+    </div> <!-- end chat-message -->
+
+  </div> <!-- end chat -->
+
+
 </template>
 
-<template name="chat">
-  <div class="chat_window">
-    <input type="hidden" id="Txtusername" />
-    <div class="top_menu">
-      <div class="buttons">
-        <div class="button close"></div>
-        <div class="button minimize"></div>
-        <div class="button maximize"></div>
-      </div>
-      <div class="title">Chat   <small id="welcomeUser" class="right"> </small></div>
-
+<template name="sendConversation">
+	<div class="modal ">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Email Chat conversation</h4>
+        </div>
+        <div class="modal-body">
+          <div style="text-align:center">
+		  	<form class="" method="POST">
+			<div class="form-group">
+				<label for="email">Send Email To:</label>
+				<input type="email" name="email" id="emailTo" class="form-control" >
+			</div>
+			<button type="button" id="sendChatConversation" class="btn btn-success">Send</button>
+			<button type="button" class="closeSendChat btn-danger">Cancel</button>
+			</form>
+		   </div>
+		</div>
+		</div>
+		</div>
     </div>
-    <ul class="messages"></ul>
-    <div class="bottom_wrapper clearfix">
-      <textarea rows="5" id="message"  name="name"  class="emojis-wysiwyg"></textarea>
-      <div class="send_message">
-        <div class="icon"></div>
-        <div class="text" onclick="sendMessage()">Send</div>
-      </div>
-
-    </div>
-  </div>
-  <div class="message_template">
-    <li class="message" id="">
-      <div class="cname avatar"></div>
-      <div class="text_wrapper">
-        <div class="text"></div>
-      </div>
-    </li>
-  </div>
 </template>
 
 <template name="chatModal">
@@ -227,7 +289,6 @@
           </div>
           {{/if}}
         </div>
-
         <div class="modal-footer">
           {{#if incomingPhoneCall}}
           <button type="button" id="answerCall" class="btn btn-success">Answer</button>
